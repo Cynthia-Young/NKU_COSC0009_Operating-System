@@ -1,0 +1,53 @@
+
+
+# Lab1 report
+
+记录一些在实验过程中发生的Bug
+
+## [练习2]
+
+##### [练习2.1] 从 CPU 加电后执行的第一条指令开始,单步跟踪 BIOS 的执行。
+
+最开始在wsl自己配的环境make debug一直报错，后来还是用了老师配好环境的ubuntu虚拟机，然后就不报错了。。。
+
+```
+yxy020819@DESKTOP-0GUKMTA:~/OS/os_kernel_lab/labcodes/lab1$ make debug
+WARNING: Image format was not specified for 'bin/ucore.img' and probing guessed raw.
+         Automatically detecting the format is dangerous for raw images, write operations on block 0 will be restricted.
+         Specify the 'raw' format explicitly to remove the restrictions.
+VNC server running on 127.0.0.1:5900
+# Option “-e” is deprecated and might be removed in a later version of gnome-terminal.
+# Use “-- ” to terminate the options and put the command line to execute after it.
+Unable to init server: Could not connect: Connection refused
+# Failed to parse arguments: Cannot open display:
+make: *** [Makefile:222: debug] Error 1
+```
+
+然后转到配置好的ubuntu打了断点之后，一直报这个错，然后没有办法从断点处继续执行。一次偶然的机会，重启了虚拟机，就没报错了。
+
+```
+Program received signal SIGTRAP, Trace/breakpoint trap.
+```
+
+## [CHALLENGE1]
+
+##### [练习] 从 CPU 加电后执行的第一条指令开始,单步跟踪 BIOS 的执行。
+
+完成challenge实验时，最后make grade一直得30/40，找了半天的错，后来发现就是switch case，在每个case后面没有break。最后加上break之后，就得到了40/40。
+
+```
+ case T_SWITCH_TOU:
+ tf->tf_cs = USER_CS;
+            tf->tf_ds = USER_DS;
+            tf->tf_es = USER_DS;
+            tf->tf_ss = USER_DS;
+            tf->tf_eflags|= FL_IOPL_MASK;
+            
+case T_SWITCH_TOK:
+ tf->tf_cs = KERNEL_CS;
+            tf->tf_ds = KERNEL_DS;
+            tf->tf_es = KERNEL_DS;
+            tf->tf_eflags &= ~FL_IOPL_MASK;
+
+```
+
